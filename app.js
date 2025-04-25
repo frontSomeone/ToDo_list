@@ -1,4 +1,8 @@
+const express = require("express");
 const mongoose = require("mongoose");
+
+const app = express();
+const PORT = 3000;
 
 mongoose.connect("mongodb://127.0.0.1:27017/todo-list").then(() => {
     console.log("Connected to MongoDB");    
@@ -6,52 +10,13 @@ mongoose.connect("mongodb://127.0.0.1:27017/todo-list").then(() => {
     console.error("MongoDB connection error:", err);
 })
 
-const db = mongoose.connection;
-let todos = [];
+const todoRoutes = require("./routes/todo");
+app.use("/todos", todoRoutes);
 
-const getTodos = async () => {
-    try {
-        todos = await db.collection("todos").find().toArray();
-        console.log("Todos:", todos);
-    } catch (error) {
-        console.error("Error fetching todos:", error);
-    }
-}
+app.get("/", (req, res) => {
+    res.redirect("/todos");
+})
 
-const createTodo = async (title, description) => {
-    const todo = {
-        title,
-        description,
-        completed: false
-    };
-    try {
-        const result = await db.collection("todos").insertOne(todo);
-        console.log("Todo created:"), result.insertedId;
-        getTodos();
-    } catch (error) {
-        console.error("Error creating todo:", error);
-    }
-};
-
-const updateTodo = async (id, updates) => {
-    try {
-        const result = await db.collection("todos").updateOne(
-            { _id: new mongoose.Types.ObjectId(id) },
-            { $set: updates }
-        );
-        console.log("Todo updated:", result.modifiedCount);
-        getTodos()
-    } catch (error) {
-        console.error("Error updating todo:", error);
-    }
-}
-
-const deleteTodo = async (id) => {
-    try {
-        const result = await db.collection("todos").deleteOne({ _id: new mongoose.Types.ObjectId(id) });
-        console.log("Todo deleted:", result.deletedCount);
-        getTodos()
-    } catch (error) {
-        console.error("Error deleting todo:", error);
-    }
-}
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+});
