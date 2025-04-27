@@ -1,5 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+const path = require("path");
+const methodOverride = require("method-override");
 
 const app = express();
 const PORT = 3000;
@@ -9,6 +12,14 @@ mongoose.connect("mongodb://127.0.0.1:27017/todo-list").then(() => {
 }).catch(err => {
     console.error("MongoDB connection error:", err);
 })
+
+app.set("view engine", "ejs");
+
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(methodOverride("_method"));
+
+app.use(express.static(path.join(__dirname, "public")));
 
 const todoRoutes = require("./routes/todo");
 app.use("/todos", todoRoutes);
