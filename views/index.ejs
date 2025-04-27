@@ -9,8 +9,15 @@
 <body>
     <div>
         <h1>TO DO LIST</h1>
+        <% if (errors) { %>
+            <ul class="errors">
+                <% errors.forEach(error => { %>
+                    <li><%= error.msg %></li>
+                <% }) %>
+            </ul>
+        <% } %>
         <form action="/todos" method="POST">
-            <input type="text" name="title" placeholder="Title" required>
+            <input type="text" name="title" placeholder="Title">
             <textarea name="description" placeholder="Description"></textarea>
             <button type="submit">Add To Do</button>
         </form>
