@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
@@ -5,12 +6,14 @@ const path = require("path");
 const methodOverride = require("method-override");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-mongoose.connect("mongodb://127.0.0.1:27017/todo-list").then(() => {
+const mongoUri = process.env.MONGODB_URI || "your-fallback-mongodb-uri";
+mongoose.connect(mongoUri).then(() => {
     console.log("Connected to MongoDB");    
 }).catch(err => {
     console.error("MongoDB connection error:", err);
+    process.exit(1);
 })
 
 app.set("view engine", "ejs");
