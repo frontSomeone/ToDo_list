@@ -16,6 +16,7 @@ mongoose.connect(mongoUri).then(() => {
     process.exit(1);
 })
 
+app.set("views", __dirname + "/views");
 app.set("view engine", "ejs");
 
 app.use(bodyParser.urlencoded({ extended: true }));
